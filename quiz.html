@@ -1,0 +1,157 @@
+<html>
+<!--
+*****************************************************************
+** ＨＥＡＤ記述部						*
+*****************************************************************
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=x-sjis">
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>クイズゲーム</title>
+<style type="text/css">
+.start {cursor:hand; background:url(start.png) no-repeat; width:106; height:46}
+.yes {cursor:hand; background:url(yes.png) no-repeat; width:106; height:46}
+.no  {cursor:hand; background:url(no.png)  no-repeat; width:106; height:46}
+</style>
+<!--
+*****************************************************************
+** ＪａｖａＳｃｒｉｐｔ記述部					*
+*****************************************************************
+-->
+<SCRIPT LANGUAGE="JavaScript">
+// -------------------------------------------------------------
+// 問題
+	qtbl = new Array();
+	qtbl[0] = "";
+　　　　qtbl[1] = "みかんはオレンジ";
+  　	qtbl[2] = "下山はオレンジ";
+	qtbl[3] = "下山はアップル";
+	qtbl[4] = "下山はパイナップル";
+	qtbl[5] = "下山はパイナップル";
+	qtbl[6] = "下山はパイナップル";	
+
+
+
+// -------------------------------------------------------------
+// 答え　（１：正しい　０：誤り）
+	atbl = new Array();
+	atbl[0] = "";
+	atbl[1]　=1;
+	atbl[2]　=1;
+	atbl[3]　=0;
+	atbl[4]　=0;
+	atbl[5]　=0;
+	atbl[6]　=0;
+
+// 共通変数
+	eflg = 1;				// 終了フラグ初期化
+// -------------------------------------------------------------
+// 初期設定
+function go(){
+	if( eflg == 1){				// クイズ続行中でなければ開始する
+		lang = 5;			// １問あたりの制限時間（秒）
+		cnt  = 0;			// 問題番号初期化
+		ok   = 0;			// 正解数初期化
+		miss = 0;			// 誤り数初期化
+		eflg = 0;			// 終了フラグ初期化
+		msgcng();			// 問題を表示
+		actsw = 0;			// 実行中フラグ初期化
+	}
+}
+// -------------------------------------------------------------
+// 正解／不正解判定
+function check(ans)
+{
+	if( eflg == 0 && actsw == 0){			// クイズ続行中ならば判定する
+		actsw = 1;				// 処理中にセット
+		clearInterval(tim);			// タイマーをとめる
+		if( ans == atbl[cnt] ){
+			msg02. innerHTML = "正解";
+			ok++;				// 正解数カウントアップ
+		}else{
+			msg02. innerHTML = "不正解";
+			miss++;				// 誤り数カウントアップ
+		}
+		setTimeout("msgcng()",0);		// 1000ミリ秒後次の問題を表示する
+	}
+}
+// -------------------------------------------------------------
+// 問題を表示
+function msgcng(){
+	actsw = 0;				// 処理終了にセット
+	msg02.innerHTML = "　";			// 解答表示エリアをクリアする
+	cnt++;					// 問題番号カウントアップ
+	if( cnt >= qtbl.length ){		// 問題が終わったら
+		owari();			// owari()を実行
+	}else{
+		msg01.innerHTML = qtbl[cnt];	// 問題を表示する
+		limt.innerHTML = lang;		// 制限時間を表示する
+		sec = 0;			// タイマーをゼロクリア
+		tim = setInterval("timer()",1000);	// 残り時間を表示するタイマーを起動
+	}
+}
+// -------------------------------------------------------------
+// タイマー処理
+function timer(){
+	sec++;					// 経過秒数をカウントアップ
+	i = lang - sec;				// 残り秒数を計算
+	limt.innerHTML = i			// 残り時間を表示する
+	if( i <= 0 ){				// 制限時間になったら
+		clearInterval(tim);
+		
+		// タイマーをとめる
+		msg02.innerHTML = "時間切れ";	// 時間切れメッセージを表示
+		miss++;				// 誤り数カウントアップ
+		setTimeout("msgcng()",1000);	// 1000ミリ秒後次の問題を表示する
+	}
+}
+// -------------------------------------------------------------
+// 終了処理
+function owari(){
+	msg02.innerHTML = "正解数＝　"+ok+"　不正解＝　"+miss;
+	clearInterval(tim);			// タイマーをとめる
+	eflg = 1;				// 終了フラグをセット
+}
+// -------------------------------------------------------------
+</SCRIPT>
+</HEAD>
+<!--
+*****************************************************************
+** ＢＯＤＹ記述部						*
+*****************************************************************
+-->
+
+<center>
+<img src="title.png">
+</center>
+<br>
+<table border=2 align="center" bgcolor="ffffff" cellpadding="10">
+<tr align="center" height="50">
+	<td width="200"><input type="button" class="start" value="" onclick="go()"></td>
+	<td width="200"><font size=6><b><div id="limt" >残り時間</div><b></font></td></tr>
+<tr valign="center" height="100">
+	<td colspan="2">
+
+
+★　問　題　★
+<font color="red">
+
+
+<div id="msg01" >スタートボタンを押してください</div></font></td></tr>
+<tr align="center" height="50">
+	<td><input type="button" class="yes" value="" onclick="check(1)"></td>
+	<td><input type="button" class="no"  value="" onclick="check(0)"></td></tr>
+<tr height="50">
+	<td colspan="2">
+
+
+♪ 答 え ♪
+<font color="blue">
+
+
+<div id="msg02" >　</div></font></td></tr>
+</table>
+<br>
+<center><a href="index.html">戻る</a></center>
+</BODY>
+</HTML>
